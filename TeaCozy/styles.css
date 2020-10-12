@@ -1,0 +1,69 @@
+body {
+  background-color: black;
+  color: seashell;
+  display: flex;
+  flex-direction: column;
+  opacity: 0.9;
+  font-size: 22px;
+  font-family: Arial, Helvetica, sans-serif;
+}
+nav {
+  height: 69px;
+  position: fixed;
+  width: 100%;
+  display: inline-flex;
+  justify-content: space-between;
+  border-bottom: 1px solid seashell;
+  z-index: 2;
+  background-color: black;
+}
+nav img {
+  align-self: center;
+}
+ul {
+  display: flex;
+  justify-content: flex-end;
+}
+ul li {
+  display: inline-flex;
+  padding: 0px 20px;
+  cursor: pointer;
+  text-decoration: underline;
+}
+a {
+  color: seashell;
+}
+.backgroundImg {
+  display: flex;
+  width: 100%;
+  margin-top: 69px;
+  height: 700px;
+  justify-content: center;
+  position: relative;
+}
+.missionText {
+  width: 1200px;
+  background-color: black;
+  position: absolute;
+  display: block;
+  align-self: center;
+  margin: 0px auto;
+  text-align: center;
+}
+.gallery {
+  display: inline-flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: center;
+}
+#teaOfTheMonthContainer {
+  width: 1000px;
+  display: flex;
+  flex-wrap: wrap;
+  align-self: center;
+  flex-direction: column;
+  text-align: center;
+}
+.galleryItem {
+  margin: 10px;
+}
