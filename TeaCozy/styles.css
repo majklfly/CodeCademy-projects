@@ -67,3 +67,43 @@ a {
 .galleryItem {
   margin: 10px;
 }
+#locations {
+  display: flex;
+  justify-content: center;
+  position: relative;
+}
+.cardsContainer {
+  position: absolute;
+  display: flex;
+  width: 100%;
+  justify-content: center;
+  align-self: center;
+}
+.card {
+  background-color: black;
+  width: 300px;
+  margin: 20px;
+  text-align: center;
+}
+#locationsTitle {
+  display: flex;
+  margin-top: 5%;
+  position: absolute;
+  z-index: 2;
+}
+footer {
+  background-color: black;
+  display: flex;
+  align-items: center;
+  flex-direction: column;
+  position: relative;
+}
+.footerContainer {
+  height: 200px;
+  margin-bottom: 50px;
+}
+#copyright {
+  position: absolute;
+  left: 20px;
+  bottom: 0px;
+}
