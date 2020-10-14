@@ -7,9 +7,10 @@ export class BusinessList extends Component {
   render() {
     return (
       <div className="BusinessList">
-        {this.props.bussinesses.map((business) => (
-          <Business business={business} />
-        ))}
+        {this.props.business &&
+          this.props.businesses.map((business) => {
+            return <Business key={business.id} business={business} />;
+          })}
       </div>
     );
   }
