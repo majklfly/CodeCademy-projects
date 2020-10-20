@@ -8,6 +8,10 @@ const db = new sqlite3.Database(
 
 const seriesRouter = express.Router();
 
+const issuesRouter = require("./issues");
+
+seriesRouter.use("/:seriesId/issues", issuesRouter);
+
 seriesRouter.get("/", (req, res) => {
   db.all("SELECT * FROM Series", (error, rows) => {
     if (error) {
@@ -78,6 +82,19 @@ seriesRouter.put("/:seriesId", validateFields, (req, res, next) => {
             res.send(200).json({ series: row });
           }
         );
+      }
+    }
+  );
+});
+
+seriesRouter.delete("/:seriesId", (req, res, next) => {
+  db.delete(
+    `SELECT * FROM Series WHERE id = ${req.params.seriesId}`,
+    (error) => {
+      if (error) {
+        next(error);
+      } else {
+        res.sendStatus(204);
       }
     }
   );
