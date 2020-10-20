@@ -30,6 +30,7 @@ artistsRouter.param("artistId", (req, res, next, artistId) => {
         next(error);
       } else if (artist) {
         req.artist = artist;
+        next();
       } else {
         res.sendStatus(404);
       }
@@ -37,18 +38,18 @@ artistsRouter.param("artistId", (req, res, next, artistId) => {
   );
 });
 
-artistsRouter.get(":artistId", (req, res) => {
+artistsRouter.get("/:artistId", (req, res) => {
   res.status(200).json({ artist: req.artist });
 });
 
 const validateFields = (req, res, next) => {
-  const name = req.body.artist.name;
-  const dateOfBirth = req.body.artist.dateOfBirth;
-  const biography = req.body.artist.biography;
-  const is_currently_employed =
+  req.name = req.body.artist.name;
+  req.dateOfBirth = req.body.artist.dateOfBirth;
+  req.biography = req.body.artist.biography;
+  req.is_currently_employed =
     req.body.artist.is_currently_employed === 0 ? 0 : 1;
 
-  if (!name || !dateOfBirth || !biography) {
+  if (!req.name || !req.dateOfBirth || !req.biography) {
     return res.sendStatus(400);
   } else {
     next();
@@ -59,17 +60,17 @@ artistsRouter.post("/", validateFields, (req, res, next) => {
   db.run(
     "INSERT INTO Artist (name, date_of_birth, biography, is_currently_employed) VALUES ($name, $dateOfBirth, $biography, $is_currently_employed)",
     {
-      $name: name,
-      $dafeOfBirth: dateOfBirth,
-      $biography: biography,
-      $is_currently_employed: is_currently_employed,
+      $name: req.name,
+      $dafeOfBirth: req.dateOfBirth,
+      $biography: req.biography,
+      $is_currently_employed: req.is_currently_employed,
     },
     (error) => {
       if (error) {
         next(error);
       } else {
         db.get(
-          `SELECT * FROM Artist WHERE Artist.id = ${this.lastID}`,
+          `SELECT * FROM Artist WHERE id = ${this.lastID}`,
           (error, artist) => {
             res.status(201).json({ artist: artist });
           }
@@ -81,14 +82,10 @@ artistsRouter.post("/", validateFields, (req, res, next) => {
 
 artistsRouter.put("/:artistId", validateFields, (req, res, next) => {
   db.run(
-    "UPDATE Artist SET name=$name, date_of_birth=$dateOfBirth, biography=$biography, is_currently_employed=$isCurrentlyEmployed WHERE id=$artistId",
-    {
-      $name: req.name,
-      $dateOfBirth: req.dateOfBirth,
-      $biography: req.biography,
-      $isCurrentlyEmployed: req.is_currently_employed,
-    },
-    (error) => {
+    `UPDATE Artist SET name = "${req.name}", date_of_birth = "${req.dateOfBirth}",
+  biography = "${req.biography}", is_currently_employed = "${req.isCurrentlyEmployed}" 
+  WHERE id = "${req.params.artistId}"`,
+    function (error) {
       if (error) {
         next(error);
       } else {

@@ -1,23 +1,27 @@
-const bodyParser = require("body-parser");
-const cors = require("cors");
-const errorHandler = require("errorhandler");
-const morgan = require("morgan");
 const express = require("express");
-
+const cors = require("cors");
+const bodyParser = require("body-parser");
+const morgan = require("morgan");
+const errorhandler = require("errorhandler");
 const apiRouter = require("./api/api");
-
 const app = express();
 
-const PORT = process.env.PORT || 4001;
+const PORT = process.env.PORT || 4000;
 
+app.use(express.static("public"));
+app.use(cors());
 app.use(bodyParser.json());
-app.use(errorHandler);
-app.use(cors);
 app.use(morgan("dev"));
+app.use(errorhandler());
+
 app.use("/api", apiRouter);
 
+//app.get('/', (req, res, next) => {
+//    res.send("<h1>Welcome to X-Press Publishing</h1>");
+//});
+
 app.listen(PORT, () => {
-  console.log(`server is running on port ${PORT}`);
+  console.log(`Server is listening on port ${PORT}`);
 });
 
 module.exports = app;
