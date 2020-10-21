@@ -1,0 +1,86 @@
+const express = require("express");
+const sqlite3 = require("sqlite3");
+
+const db = new sqlite3.Database(
+  process.env.TEST_DATABASE || "./database.sqlite"
+);
+
+const timesheetsRouter = express.Router({ mergeParams: true });
+
+const validateFields = (req, res, next) => {
+  req.hours = req.body.timesheet.hours;
+  req.rate = req.body.timesheet.rate;
+  req.date = req.body.timesheet.date;
+  if (!req.hours || !req.rate || !req.date) {
+    return res.sendStatus(400);
+  } else {
+    next();
+  }
+};
+
+timesheetsRouter.param("timesheetId", (req, res, param, timesheetId) => {
+  db.get(`SELECT * FROM Timesheet WHERE id=${timesheetId}`, (error, data) => {
+    if (error) {
+      next(error);
+    } else if (data) {
+      req.timesheet = data;
+      next();
+    } else {
+      res.sendStatus(404);
+    }
+  });
+});
+
+timesheetsRouter.get("/", (req, res, next) => {
+  db.get(
+    `SELECT * FROM Timesheet WHERE employee_id${req.params.employeeId}`,
+    (error, data) => {
+      if (error) {
+        next(err);
+      } else {
+        res.status(200).json({ timesheets: data });
+      }
+    }
+  );
+});
+
+timesheetsRouter.post("/:timesheetId", validateFields, (req, res, next) => {
+  db.run(
+    `INSERT INTO Timesheet (hours, rate, date, employee_id) VALUES (${req.hours}, ${req.rate}, ${req.date}, ${req.params.employeeId})`,
+    (error, data) => {
+      if (error) {
+        next(error);
+      } else {
+        res.status(201).json({ timesheet: data });
+      }
+    }
+  );
+});
+
+timesheetsRouter.put("/:timesheetId", validateFields, (req, res, next) => {
+  db.run(
+    `UPDATE Timesheet SET hours=${req.hours}, rate=${req.rate}, date=${req.date}, employee_id=${req.params.employeeId} WHERE id=${req.params.timesheetId}`,
+    (error, data) => {
+      if (error) {
+        next(error);
+      } else {
+        res.status(200).json({ timesheet: data });
+      }
+    }
+  );
+});
+
+timesheetsRouter.delete("/:timesheetId", (req, res, next) => {
+  db.run(
+    `DELETE * FROM Timesheet WHERE id=${req.params.timesheetId}`,
+    (error) => {
+      if (error) {
+        next(error);
+      } else {
+        res.sendStatus(204);
+      }
+    }
+  );
+});
+
+module.exports = timesheetsRouter;
